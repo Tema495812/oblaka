@@ -1,0 +1,217 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   DESIGN SYSTEM: Chrome & Asphalt
+   - Base: Deep black #080808 / #111111
+   - Accent: Burning orange #FF4500 / #FF6B35
+   - Metal: Silver #8A8A8A / #C0C0C0
+   - Text: White #F5F5F5 / #E0E0E0
+   - Fonts: Bebas Neue (headings) + Montserrat (body)
+   ============================================================ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.25rem;
+  --background: oklch(0.07 0.005 285);
+  --foreground: oklch(0.95 0 0);
+  --card: oklch(0.11 0.005 285);
+  --card-foreground: oklch(0.95 0 0);
+  --popover: oklch(0.11 0.005 285);
+  --popover-foreground: oklch(0.95 0 0);
+  --primary: oklch(0.62 0.22 35);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.15 0.005 285);
+  --secondary-foreground: oklch(0.85 0 0);
+  --muted: oklch(0.18 0.005 285);
+  --muted-foreground: oklch(0.6 0.005 285);
+  --accent: oklch(0.62 0.22 35);
+  --accent-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.62 0.22 35);
+  --chart-1: oklch(0.62 0.22 35);
+  --chart-2: oklch(0.7 0.15 50);
+  --chart-3: oklch(0.5 0.1 285);
+  --chart-4: oklch(0.4 0.05 285);
+  --chart-5: oklch(0.3 0.02 285);
+  --sidebar: oklch(0.09 0.005 285);
+  --sidebar-foreground: oklch(0.95 0 0);
+  --sidebar-primary: oklch(0.62 0.22 35);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.15 0.005 285);
+  --sidebar-accent-foreground: oklch(0.85 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.62 0.22 35);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Montserrat', sans-serif;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.05em;
+  }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      max-width: 1280px;
+    }
+  }
+
+  /* Orange glow button */
+  .btn-orange {
+    background: #FF4500;
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.1em;
+    font-size: 1rem;
+    padding: 0.85rem 2.5rem;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    transition: all 0.3s ease;
+    border: none;
+    outline: none;
+    position: relative;
+  }
+  .btn-orange:hover {
+    background: #FF6B35;
+    box-shadow: 0 0 30px rgba(255, 69, 0, 0.6), 0 0 60px rgba(255, 69, 0, 0.3);
+    transform: translateY(-2px);
+  }
+
+  /* Angled card */
+  .zone-card {
+    background: #111111;
+    border: 1px solid rgba(255,255,255,0.07);
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+    transition: all 0.4s ease;
+    overflow: hidden;
+  }
+  .zone-card:hover {
+    border-color: rgba(255, 69, 0, 0.4);
+    box-shadow: 0 0 40px rgba(255, 69, 0, 0.15);
+    transform: translateY(-4px);
+  }
+
+  /* Neon line divider */
+  .neon-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #FF4500, transparent);
+  }
+
+  /* Section number */
+  .section-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 8rem;
+    color: rgba(255,255,255,0.03);
+    position: absolute;
+    top: -1rem;
+    right: 2rem;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* Orange text accent */
+  .text-orange {
+    color: #FF4500;
+  }
+
+  /* Scanline overlay */
+  .scanlines::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+  }
+}
