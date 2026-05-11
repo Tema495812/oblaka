@@ -1,20 +1,192 @@
-/* Design: Chrome & Asphalt — stylized floor plan with orange highlights */
+/* Design: Chrome & Asphalt — isometric 3D floor plan */
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState } from "react";
 
 const zones = [
-  { id: 1, label: "Мотошкола", color: "#FF4500", x: 8, y: 10, w: 28, h: 35, icon: "🏍" },
-  { id: 2, label: "Музей JDM", color: "#9B59B6", x: 40, y: 10, w: 30, h: 35, icon: "🇯🇵" },
-  { id: 3, label: "Дрифт-картинг", color: "#E74C3C", x: 74, y: 10, w: 22, h: 55, icon: "🏁" },
-  { id: 4, label: "Детейлинг", color: "#27AE60", x: 8, y: 52, w: 30, h: 30, icon: "✨" },
-  { id: 5, label: "Мотосалон", color: "#2980B9", x: 40, y: 52, w: 56, h: 30, icon: "🏍" },
+  {
+    id: 1,
+    label: "Мотошкола",
+    icon: "🏍",
+    color: "#FF4500",
+    desc: "Обучение с нуля, безопасная площадка, опытные инструкторы",
+    // isometric grid position (col, row) and size
+    col: 0, row: 1, cols: 2, rows: 2,
+  },
+  {
+    id: 2,
+    label: "Дрифт-картинг",
+    icon: "🏁",
+    color: "#E74C3C",
+    desc: "Адреналин контролируемого заноса на закрытой трассе",
+    col: 0, row: 3, cols: 2, rows: 2,
+  },
+  {
+    id: 3,
+    label: "Детейлинг",
+    icon: "✨",
+    color: "#27AE60",
+    desc: "Профессиональный уход за автомобилем",
+    col: 3, row: 0, cols: 2, rows: 2,
+  },
+  {
+    id: 4,
+    label: "Мото-Салон",
+    icon: "🏍",
+    color: "#2980B9",
+    desc: "Шоурум мотоциклов и экипировки",
+    col: 5, row: 0, cols: 2, rows: 2,
+  },
+  {
+    id: 5,
+    label: "Музей JDM",
+    icon: "🇯🇵",
+    color: "#9B59B6",
+    desc: "Культовые японские авто и атмосфера JDM культуры",
+    col: 3, row: 3, cols: 2, rows: 2,
+  },
 ];
 
-export default function MapSchemeSection() {
-  const ref = useRef(null);
+// Isometric projection constants
+const TILE_W = 64;
+const TILE_H = 32;
+const WALL_H = 28;
+
+function toIso(col: number, row: number) {
+  return {
+    x: (col - row) * (TILE_W / 2),
+    y: (col + row) * (TILE_H / 2),
+  };
+}
+
+function IsoBlock({
+  col, row, cols, rows, color, label, icon, isActive, onEnter, onLeave, delay,
+}: {
+  col: number; row: number; cols: number; rows: number;
+  color: string; label: string; icon: string;
+  isActive: boolean; onEnter: () => void; onLeave: () => void; delay: number;
+}) {
+  const tl = toIso(col, row);
+  const tr = toIso(col + cols, row);
+  const br = toIso(col + cols, row + rows);
+  const bl = toIso(col, row + rows);
+
+  const topFace = ${tl.x},${tl.y} ${tr.x},${tr.y} ${br.x},${br.y} ${bl.x},${bl.y};
+
+  // Left face (bottom-left side)
+  const leftFace = ${bl.x},${bl.y} ${bl.x},${bl.y + WALL_H} ${tl.x},${tl.y + WALL_H} ${tl.x},${tl.y};
+  // Right face (bottom-right side)
+  const rightFace = ${br.x},${br.y} ${br.x},${br.y + WALL_H} ${bl.x},${bl.y + WALL_H} ${bl.x},${bl.y};
+
+  const cx = (tl.x + tr.x + br.x + bl.x) / 4;
+  const cy = (tl.y + tr.y + br.y + bl.y) / 4;
+
+  const alpha = isActive ? "cc" : "33";
+  const wallAlpha = isActive ? "99" : "22";
+
+  return (
+    <motion.g
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay }}
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+      style={{ cursor: "pointer" }}
+    >
+      {/* Left wall */}
+      <polygon
+        points={leftFace}
+        fill={color + wallAlpha}
+        stroke={color + "60"}
+        strokeWidth="0.8"
+        style={{ transition: "all 0.3s" }}
+      />
+      {/* Right wall */}
+      <polygon
+        points={rightFace}
+        fill={color + (isActive ? "66" : "18")}
+        stroke={color + "60"}
+        strokeWidth="0.8"
+        style={{ transition: "all 0.3s" }}
+      />
+      {/* Top face */}
+      <polygon
+        points={topFace}
+        fill={color + alpha}
+        stroke={isActive ? color : color + "80"}
+        strokeWidth={isActive ? "1.5" : "0.8"}
+        style={{ transition: "all 0.3s" }}
+      />
+      {/* Glow on active */}
+      {isActive && (
+        <polygon
+          points={topFace}
+          fill="none"
+          stroke={color}
+          strokeWidth="2"
+          opacity="0.4"
+          filter="url(#glow)"
+        />
+      )}
+      {/* Icon */}
+      <text
+        x={cx}
+        y={cy - 2}
+        textAnchor="middle"
+        fontSize="14"
+        style={{ userSelect: "none" }}
+      >
+        {icon}
+      </text>
+      {/* Label */}
+      <text
+        x={cx}
+        y={cy + 12}
+        textAnchor="middle"
+        fill={isActive ? "#fff" : color}
+        fontSize="7"
+        fontFamily="Montserrat, sans-serif"
+        fontWeight="700"
+        style={{ transition: "all 0.3s", userSelect: "none" }}
+      >
+        {label}
+      </text>
+    </motion.g>
+  );
+}
+
+export default function MapSchemeSection() {const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [activeZone, setActiveZone] = useState<number | null>(null);
+
+  const active = zones.find(z => z.id === activeZone);
+
+  // Corridor path points (isometric)
+  const corridorPoints = () => {
+    // Main vertical corridor at col=2.5
+    const top = toIso(2.5, 0.5);
+    const mid = toIso(2.5, 2.5);
+    const bot = toIso(2.5, 5.5);
+    // Horizontal branch at row=2.5
+    const left = toIso(0, 2.5);
+    const right = toIso(7, 2.5);
+    return { top, mid, bot, left, right };
+  };
+
+  const c = corridorPoints();
+
+  // Lift & travulator positions
+  const lift = toIso(2.5, 5.2);
+  const trav = toIso(2.5, 2.5);
+
+  // SVG viewBox: figure out bounds
+  // Grid spans col 0-7, row 0-6 roughly
+  const minX = toIso(0, 6).x - 20;
+  const maxX = toIso(7, 0).x + 20;
+  const minY = toIso(0, 0).y - WALL_H - 20;
+  const maxY = toIso(7, 6).y + WALL_H + 40;
+  const vbW = maxX - minX;
+  const vbH = maxY - minY;
 
   return (
     <section id="scheme" ref={ref} className="relative py-24 bg-[#0A0A0A] overflow-hidden">
@@ -52,17 +224,18 @@ export default function MapSchemeSection() {
           <span className="text-[#FF4500]">−3 уровень</span>
         </motion.h2>
 
-        <div className="grid lg:grid-cols-3 gap-8 items-start">
-          {/* SVG Floor Plan */}
+        <div className="grid lg:grid-cols-3 gap-8 items-center">
+          {/* Isometric SVG */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="lg:col-span-2"
           >
-            <div className="relative bg-[#111] border border-white/10 p-4"
-              style={{ clipPath: "polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px))" }}>
-              {/* Floor plan label */}
+            <div
+              className="relative bg-[#111] border border-white/10 p-4"
+              style={{ clipPath: "polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px))" }}
+            >
               <div className="flex items-center justify-between mb-3">
                 <span className="text-[#FF4500] text-xs tracking-widest uppercase" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                   ТЦ «Облака» · Этаж −3
@@ -72,109 +245,209 @@ export default function MapSchemeSection() {
                 </span>
               </div>
 
-              {/* SVG plan */}
-              <svg viewBox="0 0 100 100" className="w-full" style={{ aspectRatio: "16/9" }}>
-                {/* Outer boundary */}
-                <rect x="5" y="5" width="90" height="92" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="0.5" />
-                {/* Grid lines */}
-                {[20, 40, 60, 80].map(x => (
-                  <line key={x} x1={x} y1="5" x2={x} y2="97" stroke="rgba(255,255,255,0.04)" strokeWidth="0.3" />
-                ))}
-                {[25, 50, 75].map(y => (
-                  <line key={y} x1="5" y1={y} x2="95" y2={y} stroke="rgba(255,255,255,0.04)" strokeWidth="0.3" />
-                ))}
-
-                {/* Zone blocks */}
-                {zones.map((zone) => (
-                  <g
-                    key={zone.id}
-                    onMouseEnter={() => setActiveZone(zone.id)}
-                    onMouseLeave={() => setActiveZone(null)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <rect
-                      x={zone.x}
-                      y={zone.y}
-                      width={zone.w}
-                      height={zone.h}
-                      fill={activeZone === zone.id ? zone.color + "40" : zone.color + "18"}
-                      stroke={activeZone === zone.id ? zone.color : zone.color + "60"}
-                      strokeWidth={activeZone === zone.id ? "0.8" : "0.4"}
-                      rx="0.5"
-                      style={{ transition: "all 0.3s" }}
-                    />
-                    <text
-                      x={zone.x + zone.w / 2}
-                      y={zone.y + zone.h / 2 - 2}
-                      textAnchor="middle"
-                      fill={activeZone === zone.id ? "#fff" : zone.color}
-                      fontSize="3"
-                      fontFamily="Montserrat, sans-serif"
-                      fontWeight="600"
-                      style={{ transition: "all 0.3s" }}
-                    >
-                      {zone.label}
-                    </text>
-                    <text
-                      x={zone.x + zone.w / 2}
-                      y={zone.y + zone.h / 2 + 5}
-                      textAnchor="middle"
-                      fill={zone.color + "80"}
-                      fontSize="5"
-                    >
-                      {zone.icon}
-                    </text>
-                  </g>
-                ))}
-
-                {/* Entry arrow */}
-                <g>
-                  <line x1="50" y1="97" x2="50" y2="90" stroke="#FF4500" strokeWidth="0.6" markerEnd="url(#arrow)" />
-                  <text x="50" y="100" textAnchor="middle" fill="#FF4500" fontSize="2.5" fontFamily="Montserrat, sans-serif">ВХОД</text>
-                </g>
+              <svg
+                viewBox={`${minX} ${minY} ${vbW} ${vbH}`}
+                className="w-full"
+                style={{ aspectRatio: "16/9" }}
+              >
                 <defs>
-                  <marker id="arrow" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto">
-                    <path d="M0,0 L0,4 L4,2 z" fill="#FF4500" />
+                  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="3" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                  {/* Floor grid */}
+                  <pattern id="grid" width={TILE_W} height={TILE_H} patternUnits="userSpaceOnUse"
+                    patternTransform={`rotate(-30) skewX(30)`}>
+                    <path d={`M ${TILE_W} 0 L 0 0 0 ${TILE_H}`} fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" />
+                  </pattern>
+                </defs>
+
+                {/* Floor base */}
+                {(() => {
+                  const p0 = toIso(0, 0);
+                  const p1 = toIso(7, 0);
+                  const p2 = toIso(7, 6);
+                  const p3 = toIso(0, 6);
+                  return (
+                    <polygon
+                      points={`${p0.x},${p0.y} ${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}`}
+                      fill="#0D0D0D"
+                      stroke="rgba(255,255,255,0.06)"
+                      strokeWidth="0.5"
+                    />
+                  );
+                })()}
+
+                {/* Isometric grid lines */}
+                {[0,1,2,3,4,5,6,7].map(col => {
+                  const a = toIso(col, 0); const b = toIso(col, 6);
+                  return <line key={`c${col}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="rgba(255,255,255,0.04)" strokeWidth="0.4" />;
+                })}
+                {[0,1,2,3,4,5,6].map(row => {
+                  const a = toIso(0, row); const b = toIso(7, row);
+                  return <line key={`r${row}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="rgba(255,255,255,0.04)" strokeWidth="0.4" />;
+                })}
+
+                {/* Corridor — vertical */}
+                {(() => {
+                  const tl = toIso(2.3, 0.5); const tr = toIso(2.7, 0.5);
+                  const bl = toIso(2.3, 5.5); const br = toIso(2.7, 5.5);
+                  return (
+                    <polygon
+                      points={`${tl.x},${tl.y} ${tr.x},${tr.y} ${br.x},${br.y} ${bl.x},${bl.y}`}
+                      fill="rgba(255,69,0,0.06)"
+                      stroke="rgba(255,69,0,0.25)"
+                      strokeWidth="0.5"
+                      strokeDasharray="2,2"
+                    />
+                  );
+                })()}
+
+                {/* Corridor — horizontal */}
+                {(() => {
+                  const tl = toIso(0, 2.3); const tr = toIso(7, 2.3);
+                  const bl = toIso(0, 2.7); const br = toIso(7, 2.7);
+                  return (
+                    <polygon
+                      points={`${tl.x},${tl.y} ${tr.x},${tr.y} ${br.x},${br.y} ${bl.x},${bl.y}`}
+                      fill="rgba(255,69,0,0.06)"
+                      stroke="rgba(255,69,0,0.25)"
+                      strokeWidth="0.5"
+                      strokeDasharray="2,2"
+                    />
+                  );
+                })()}
+
+                {/* Zones — sorted back to front for correct iso rendering */}
+                {[...zones].sort((a, b) => (a.col + a.row) - (b.col + b.row)).map((zone, i) => (
+                  <IsoBlock
+                    key={zone.id}
+                    col={zone.col} row={zone.row}
+                    cols={zone.cols} rows={zone.rows}
+                    color={zone.color}
+                    label={zone.label}
+                    icon={zone.icon}
+                    isActive={activeZone === zone.id}
+                    onEnter={() => setActiveZone(zone.id)}
+                    onLeave={() => setActiveZone(null)}
+                    delay={0.3 + i * 0.1}
+                  />
+                ))}
+
+                {/* Lift marker */}
+                {(() => {
+                  const p = toIso(2.5, 5.5);
+                  return (
+                    <g>
+                      <circle cx={p.x} cy={p.y + 8} r="6" fill="#FF4500" opacity="0.15" stroke="#FF4500" strokeWidth="0.8" />
+                      <text x={p.x} y={p.y + 11} textAnchor="middle" fill="#FF4500" fontSize="6" fontFamily="Montserrat, sans-serif" fontWeight="600">🛗</text>
+                      <text x={p.x} y={p.y + 20} textAnchor="middle" fill="#FF4500" fontSize="5" fontFamily="Montserrat, sans-serif">ЛИФТ</text>
+                      {/* Arrow up */}
+                      <line x1={p.x} y1={p.y + 2} x2={p.x} y2={p.y - 10} stroke="#FF4500" strokeWidth="0.8" opacity="0.5" markerEnd="url(#arrowUp)" />
+                    </g>
+                  );
+                })()}
+
+                {/* Travulator marker */}
+                {(() => {
+                  const p = toIso(2.5, 2.5);
+                  return (
+                    <g>
+                      <circle cx={p.x} cy={p.y} r="5" fill="#F39C12" opacity="0.15" stroke="#F39C12" strokeWidth="0.8" />
+                      <text x={p.x} y={p.y + 3} textAnchor="middle" fill="#F39C12" fontSize="5" fontFamily="Montserrat, sans-serif">⚡</text>
+                      <text x={p.x + 12} y={p.y + 2} textAnchor="middle" fill="#F39C12" fontSize="4.5" fontFamily="Montserrat, sans-serif">ТРАВОЛАТОР</text>
+                    </g>
+                  );
+                })()}
+
+                <defs>
+                  <marker id="arrowUp" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto">
+                    <path d="M0,4 L2,0 L4,4 z" fill="#FF4500" />
                   </marker>
                 </defs>
               </svg>
             </div>
           </motion.div>
 
-          {/* Legend */}
+          {/* Right panel */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.4 }}
             className="flex flex-col gap-3"
           >
+            {/* Active zone info */}
+            {active ? (
+              <motion.div
+                key={active.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-4 border mb-2"
+                style={{
+                  borderColor: active.color + "60",
+                  background: active.color + "10",
+                  clipPath: "polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px))",
+                }}
+              >
+                <div className="text-3xl mb-2">{active.icon}</div>
+                <h3
+                  className="text-white text-xl mb-1"
+                  style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.05em", color: active.color }}
+                >
+                  {active.label}
+                </h3>
+                <p className="text-white/50 text-xs leading-relaxed" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  {active.desc}
+                </p>
+              </motion.div>
+            ) : (
+              <div className="p-4 border border-white/5 mb-2" style={{ clipPath: "polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px))" }}>
+                <p className="text-white/20 text-xs" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  Наведи на зону чтобы узнать подробнее
+                </p>
+              </div>
+            )}
+
             <h3
-              className="text-white/40 text-xs uppercase tracking-widest mb-2"
+              className="text-white/40 text-xs uppercase tracking-widest"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
               Зоны комплекса
             </h3>
+
             {zones.map((zone) => (
               <div
                 key={zone.id}
                 onMouseEnter={() => setActiveZone(zone.id)}
                 onMouseLeave={() => setActiveZone(null)}
-                className={`flex items-center gap-3 p-3 border transition-all duration-300 cursor-pointer ${
-                  activeZone === zone.id
-                    ? "border-[#FF4500]/40 bg-[#FF4500]/5"
-                    : "border-white/5 bg-white/[0.02] hover:border-white/10"
-                }`}
-                style={{ clipPath: "polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))" }}
+                className="flex items-center gap-3 p-3 border transition-all duration-300 cursor-pointer"
+                style={{
+                  borderColor: activeZone === zone.id ? zone.color + "60" : "rgba(255,255,255,0.05)",
+                  background: activeZone === zone.id ? zone.color + "10" : "rgba(255,255,255,0.01)",
+                  clipPath: "polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))",
+                }}
               >
-                <div className="w-3 h-3 flex-shrink-0" style={{ background: zone.color }} />
-                <span
-                  className="text-sm text-white/70"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
-                >
-                  {zone.label}
-                </span>
+                <div className="w-3 h-3 flex-shrink-0 rounded-sm" style={{ background: zone.color }} />
+                <span className="text-sm" style={{ fontFamily: "'Montserrat', sans-serif", color: activeZone === zone.id ? "#fff" : "rgba(255,255,255,0.6)" }}>
+                  {zone.icon} {zone.label}</span>
               </div>
             ))}
+
+            {/* Infrastructure */}
+            <div className="mt-2 flex flex-col gap-2">
+              <h3 className="text-white/40 text-xs uppercase tracking-widest" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                Инфраструктура
+              </h3>
+              <div className="flex items-center gap-2 text-xs text-white/40" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                <span>🛗</span><span>Лифт</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-white/40" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                <span>⚡</span><span>Траволатор</span>
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>
