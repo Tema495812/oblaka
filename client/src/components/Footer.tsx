@@ -29,7 +29,7 @@ export default function Footer() {
           className="text-white/20 text-xs"
           style={{ fontFamily: "'Montserrat', sans-serif" }}
         >
-          © 2026 Автомобильный комплекс
+          © 2026 Авто-мото комплекс
         </p>
       </div>
     </footer>
