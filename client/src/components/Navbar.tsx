@@ -51,7 +51,7 @@ export default function Navbar() {
             style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.1em" }}
             className="text-white text-xl group-hover:text-[#FF4500] transition-colors"
           >
-            AUTO COMPLEX
+            COMPLEX
           </span>
         </button>
 
