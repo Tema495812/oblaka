@@ -5,7 +5,7 @@ import { useRef } from "react";
 
 const stats = [
   { value: "17.000", unit: "м²", label: "общая площадь" },
-  { value: "6", unit: "+", label: "уникальных зон" },
+  { value: "5", unit: "+", label: "уникальных зон" },
   { value: "−3", unit: "", label: "этаж под землёй" },
   { value: "1", unit: "", label: "место для всего" },
 ];
