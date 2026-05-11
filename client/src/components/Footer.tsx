@@ -14,7 +14,7 @@ export default function Footer() {
             className="text-white/40 text-sm"
             style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.1em" }}
           >
-            AUTO COMPLEX
+            COMPLEX
           </span>
         </div>
 
@@ -29,7 +29,7 @@ export default function Footer() {
           className="text-white/20 text-xs"
           style={{ fontFamily: "'Montserrat', sans-serif" }}
         >
-          © 2024 Автомобильный комплекс
+          © 2026 Автомобильный комплекс
         </p>
       </div>
     </footer>
