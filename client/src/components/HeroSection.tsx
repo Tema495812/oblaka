@@ -49,8 +49,8 @@ export default function HeroSection() {
             style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.04em" }}
             className="text-white leading-none mb-4"
           >
-            <span className="block text-[clamp(3rem,8vw,7rem)]">Автомобильное</span>
-            <span className="block text-[clamp(3rem,8vw,7rem)]">пространство</span>
+            <span className="block text-[clamp(3rem,8vw,7rem)]">Авто-мото</span>
+            <span className="block text-[clamp(3rem,8vw,7rem)]">комплекс</span>
             <span className="block text-[clamp(3.5rem,9vw,8rem)] text-[#FF4500]">17.000 М²</span>
             <span className="block text-[clamp(1.5rem,3vw,2.5rem)] text-[#C0C0C0] font-normal mt-2">под землёй</span>
           </motion.h1>
