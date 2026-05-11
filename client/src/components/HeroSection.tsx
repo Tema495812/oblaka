@@ -97,7 +97,7 @@ export default function HeroSection() {
           >
             {[
               { num: "17.000", label: "м² площадь" },
-              { num: "6", label: "зон комплекса" },
+              { num: "5", label: "зон комплекса" },
               { num: "−3", label: "этаж под землёй" },
               { num: "1", label: "место для всего" },
             ].map((stat) => (
