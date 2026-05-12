@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { MapView } from "@/components/Map";
+
 
 export default function LocationSection() {
   const ref = useRef(null);
@@ -128,26 +128,13 @@ export default function LocationSection() {
             className="lg:col-span-3 h-[450px] relative overflow-hidden"
             style={{ clipPath: "polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px))" }}
           >
-            <MapView
-              onMapReady={(map) => {
-                const center = { lat: 55.6122, lng: 37.6589 };
-                map.setCenter(center);
-                map.setZoom(16);
-                new google.maps.Marker({
-                  position: center,
-                  map,
-                  title: "Автомобильный комплекс — ТЦ Облака",
-                  icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    scale: 10,
-                    fillColor: "#FF4500",
-                    fillOpacity: 1,
-                    strokeColor: "#fff",
-                    strokeWeight: 2,
-                  },
-                });
-              }}
-              className="w-full h-full"
+            <iframe
+              src="https://yandex.ru/map-widget/v1/?ll=37.658900%2C55.612200&z=16&pt=37.658900%2C55.612200%2Cpm2rdm~37.658900%2C55.612200&text=ТЦ%20Облака%20Москва"
+              width="100%"
+              height="100%"
+              style={{ border: "none", filter: "invert(90%) hue-rotate(180deg)" }}
+              allowFullScreen
+              title="Карта"
             />
           </motion.div>
         </div>
