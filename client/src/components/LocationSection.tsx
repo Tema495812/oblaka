@@ -129,12 +129,13 @@ export default function LocationSection() {
             style={{ clipPath: "polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px))" }}
           >
             <iframe
-              src="https://yandex.ru/map-widget/v1/?ll=37.658900%2C55.612200&z=16&pt=37.658900%2C55.612200%2Cpm2rdm~37.658900%2C55.612200&text=ТЦ%20Облака%20Москва"
+              src="https://yandex.ru/map-widget/v1/?ll=37.732698%2C55.612128&z=16&pt=37.732698%2C55.612128%2Cpm2rdm&text=%D0%A2%D0%A6%20%D0%9E%D0%B1%D0%BB%D0%B0%D0%BA%D0%B0"
               width="100%"
               height="100%"
-              style={{ border: "none", filter: "invert(90%) hue-rotate(180deg)" }}
+              style={{ border: "none", filter: "invert(85%) hue-rotate(180deg) contrast(0.9)" }}
               allowFullScreen
-              title="Карта"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Карта ТЦ Облака"
             />
           </motion.div>
         </div>
