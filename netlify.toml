@@ -1,0 +1,4 @@
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "frame-src 'self' https://yandex.ru https://yandex.com https://*.yandex.ru https://*.yandex.com;"
