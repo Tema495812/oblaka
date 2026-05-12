@@ -129,14 +129,23 @@ export default function LocationSection() {
             style={{ clipPath: "polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px))" }}
           >
             <iframe
-              src="https://yandex.ru/map-widget/v1/?ll=37.732698%2C55.612128&z=16&pt=37.732698%2C55.612128%2Cpm2rdm&text=%D0%A2%D0%A6%20%D0%9E%D0%B1%D0%BB%D0%B0%D0%BA%D0%B0"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=37.7227%2C55.6071%2C37.7427%2C55.6171&layer=mapnik&marker=55.612128%2C37.732698"
               width="100%"
               height="100%"
-              style={{ border: "none", filter: "invert(85%) hue-rotate(180deg) contrast(0.9)" }}
+              style={{ border: "none", filter: "invert(85%) hue-rotate(180deg) contrast(0.85) brightness(0.9)" }}
               allowFullScreen
-              referrerPolicy="no-referrer-when-downgrade"
               title="Карта ТЦ Облака"
             />
+            {/* Overlay button */}
+            <a
+              href="https://yandex.ru/maps/?pt=37.732698,55.612128&z=16&l=map"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2 bg-[#FF4500] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[#e03d00] transition-colors"
+              style={{ fontFamily: "'Montserrat', sans-serif", clipPath: "polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))" }}
+            >
+              Открыть в Яндекс Картах →
+            </a>
           </motion.div>
         </div>
       </div>
