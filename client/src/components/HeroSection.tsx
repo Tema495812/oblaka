@@ -63,7 +63,7 @@ export default function HeroSection() {
             className="text-[#8A8A8A] text-base md:text-lg font-light max-w-xl mb-10 leading-relaxed"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
-            Мотошкола, музей японских авто, дрифт-картинг и инфраструктура в одном месте
+            Мотошкола, мотосалон, музей японских авто, дрифт-картинг и инфраструктура в одном месте
           </motion.p>
 
           {/* CTA */}
