@@ -58,7 +58,7 @@ export default function GallerySection() {
             className="text-white text-[clamp(2rem,4vw,3.5rem)] leading-none"
           >
             Пространство, где<br />
-            <span className="text-[#FF4500]">автомобиль — стиль жизни</span>
+            <span className="text-[#FF4500]">Мототехника и автомобиль — стиль жизни</span>
           </h2>
           <p
             className="text-[#8A8A8A] text-sm max-w-xs leading-relaxed"
