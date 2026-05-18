@@ -62,7 +62,7 @@ export default function LocationSection() {
                 icon: "🚇",
                 label: "Метро",
                 value: "Домодедовская",
-                sub: "Выход 1, 5 минут пешком",
+                sub: "Выход №1,\n5 минут пешком",
               },
               {
                 icon: "🅿️",
@@ -103,7 +103,7 @@ export default function LocationSection() {
                     className="text-[#8A8A8A] text-xs mt-0.5"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   >
-                    {item.sub}
+                    <span style={{ whiteSpace: "pre-line" }}>{item.sub}</span>
                   </div>
                 </div>
               </motion.div>
